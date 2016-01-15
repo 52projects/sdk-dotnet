@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 
 namespace AuthorizeNet {
-
     public class GatewayResponse : ResponseBase, AuthorizeNet.IGatewayResponse {
+        public GatewayResponse() {
+
+        }
 
         public GatewayResponse(string[] rawResponse) {
             this.RawResponse = rawResponse;

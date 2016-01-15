@@ -71,13 +71,14 @@ namespace AuthorizeNet {
         /// <param name="bankName">The name of the bank that holds the customer’s account</param>
         /// <param name="acctName">The name associated with the bank account</param>
         /// <param name="bankCheckNumber">The check number on the customer’s paper check</param>
+        /// <param name="includeCapture">Should the item also be captured</param>
         public EcheckAuthorizationRequest(decimal amount, string bankABACode, string bankAccountNumber,
                                           BankAccountType acctType, string bankName, string acctName,
-                                          string bankCheckNumber) :
+                                          string bankCheckNumber, bool includeCapture = false) :
                                               this(
                                               EcheckType.WEB, amount, bankABACode, bankAccountNumber, acctType, bankName,
                                               acctName,
-                                              bankCheckNumber)
+                                              bankCheckNumber, includeCapture)
         {
         }
 
@@ -93,14 +94,20 @@ namespace AuthorizeNet {
         /// <param name="bankName">The name of the bank that holds the customer’s account</param>
         /// <param name="acctName">The name associated with the bank account</param>
         /// <param name="bankCheckNumber">The check number on the customer’s paper check</param>
+        /// /// <param name="includeCapture">Should the item also be captured</param>
         public EcheckAuthorizationRequest(EcheckType type, decimal amount, string bankABACode, string bankAccountNumber,
                                           BankAccountType acctType, string bankName, string acctName,
-                                          string bankCheckNumber) :
+                                          string bankCheckNumber, bool includeCapture = false) :
                                               base(
                                               type, amount, bankABACode, bankAccountNumber, acctType, bankName, acctName,
                                               bankCheckNumber)
         {
-            SetApiAction(RequestAction.Authorize);
+            if (includeCapture) {
+                SetApiAction(RequestAction.AuthorizeAndCapture);
+            }
+            else {
+                SetApiAction(RequestAction.Authorize);
+            }
         }
     }
 
