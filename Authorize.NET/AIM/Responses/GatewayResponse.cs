@@ -185,6 +185,12 @@ namespace AuthorizeNet {
                 return ParseInt(1);
             }
         }
+
+        public int? ResponseMessageCode {
+            get {
+                return ParseInt(2);
+            }
+        }
         
         public string Message {
             get {

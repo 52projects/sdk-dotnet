@@ -159,6 +159,13 @@ namespace AuthorizeNet {
         }
 
         /// <summary>
+        /// Gets the response message code which is a more detailed response code
+        /// </summary>
+        public int? ResponseMessageCode {
+            get { return ParseInt(2); }
+        }
+
+        /// <summary>
         /// Gets the message.
         /// </summary>
         /// <value>The message.</value>

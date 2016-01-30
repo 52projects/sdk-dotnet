@@ -42,6 +42,10 @@ namespace AuthorizeNet {
             }
         }
 
+        public int? ResponseMessageCode {
+            get { return null; }
+        }
+
         public bool Approved {
             get {
                 return this.ResponseCode == "1";
