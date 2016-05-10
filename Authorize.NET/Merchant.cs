@@ -1,14 +1,13 @@
-namespace AuthorizeNet
-{
+namespace AuthorizeNet {
 #pragma warning disable 1591
     using System;
 
     [Serializable]
     public class Merchant {
 
-	    public const string CpVersion = "1.0";	// card present version
-	    public const int MaxLoginLength = 20;
-	    public const int MaxTransactionKeyLength = 16;
+        public const string CpVersion = "1.0";  // card present version
+        public const int MaxLoginLength = 20;
+        public const int MaxTransactionKeyLength = 16;
 
         protected Environment Environment { get; set; }
         protected string Login { get; set; }
@@ -19,22 +18,21 @@ namespace AuthorizeNet
         protected string UserRef { get; set; }
         protected string Md5Value { get; set; }
 
-        private Merchant() 
-        {
+        private Merchant() {
             Environment = Environment.SANDBOX;
-	    }
+        }
 
-	    public static Merchant CreateMerchant(Environment environment, string login, string transactionKey) {
+        public static Merchant CreateMerchant(Environment environment, string login, string transactionKey) {
 
-		    var merchant = new Merchant {Environment = environment, Login = login, TransactionKey = transactionKey};
+            var merchant = new Merchant { Environment = environment, Login = login, TransactionKey = transactionKey };
 
-	        return merchant;
-	    }
+            return merchant;
+        }
 
-	    public bool IsSandboxEnvironment() {
-		    return (Environment !=null &&
-			    (Environment.SANDBOX == Environment || Environment.SANDBOX_TESTMODE == Environment));
-	    }
+        public bool IsSandboxEnvironment() {
+            return (Environment != null &&
+                (Environment.SANDBOX == Environment));
+        }
     }
 #pragma warning restore 1591
 }
