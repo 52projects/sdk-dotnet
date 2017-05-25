@@ -21,7 +21,7 @@ namespace AuthorizeNet {
     public class Gateway : AuthorizeNet.IGateway {
 
         public const string TEST_URL = "https://test.authorize.net/gateway/transact.dll";
-        public const string LIVE_URL = "https://secure.authorize.net/gateway/transact.dll";
+        public const string LIVE_URL = "https://secure2.authorize.net/gateway/transact.dll";
 
 		
 		public string ApiLogin { get; set;}
@@ -57,6 +57,8 @@ namespace AuthorizeNet {
             webRequest.Method = "POST";
             webRequest.ContentLength = postData.Length;
             webRequest.ContentType = "application/x-www-form-urlencoded";
+
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
 
             // post data is sent as a stream
             StreamWriter myWriter = null;
