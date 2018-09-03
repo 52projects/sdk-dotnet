@@ -93,6 +93,30 @@ namespace AuthorizeNet.Api.Controllers.Test
                 Assert.AreEqual(anEnum, enumFromValue);
             }
 
+            foreach (var anEnum in Enum.GetValues(typeof(afdsTransactionEnum)))
+            {
+                var aValue = anEnum.ToString();
+                afdsTransactionEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }
+		
+            foreach (var anEnum in Enum.GetValues(typeof(messageTypeEnum)))
+            {
+                var aValue = anEnum.ToString();
+                messageTypeEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }
+		
+            foreach (var anEnum in Enum.GetValues(typeof(customerTypeEnum)))
+            {
+                var aValue = anEnum.ToString();
+                customerTypeEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }
+
             foreach (var anEnum in Enum.GetValues(typeof(EncodingType)))
             {
                 var aValue = anEnum.ToString();
@@ -141,6 +165,13 @@ namespace AuthorizeNet.Api.Controllers.Test
                 Assert.AreEqual(anEnum, enumFromValue);
             }
 
+			foreach (var anEnum in Enum.GetValues(typeof(webCheckOutTypeEnum)))
+            {
+                var aValue = anEnum.ToString();
+                webCheckOutTypeEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }														   
             foreach (var anEnum in Enum.GetValues(typeof(ItemChoiceType)))
             {
                 var aValue = anEnum.ToString();
@@ -161,6 +192,14 @@ namespace AuthorizeNet.Api.Controllers.Test
             {
                 var aValue = anEnum.ToString();
                 splitTenderStatusEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }
+
+            foreach (var anEnum in Enum.GetValues(typeof(TransactionGroupStatusEnum)))
+            {
+                var aValue = anEnum.ToString();
+                TransactionGroupStatusEnum enumFromValue;
                 Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
                 Assert.AreEqual(anEnum, enumFromValue);
             }
@@ -236,6 +275,30 @@ namespace AuthorizeNet.Api.Controllers.Test
                 Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
                 Assert.AreEqual(anEnum, enumFromValue);
             }
+
+            foreach (var anEnum in Enum.GetValues(typeof(CustomerPaymentProfileSearchTypeEnum)))
+            {
+                var aValue = anEnum.ToString();
+                CustomerPaymentProfileSearchTypeEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }
+
+            foreach (var anEnum in Enum.GetValues(typeof(CustomerPaymentProfileOrderFieldEnum)))
+            {
+                var aValue = anEnum.ToString();
+                CustomerPaymentProfileOrderFieldEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }
+			
+			foreach (var anEnum in Enum.GetValues(typeof(AUJobTypeEnum)))
+            {
+                var aValue = anEnum.ToString();
+                AUJobTypeEnum enumFromValue;
+                Assert.IsTrue(Enum.TryParse(aValue, out enumFromValue));
+                Assert.AreEqual(anEnum, enumFromValue);
+            }
         } 
 
         /*
@@ -250,4 +313,5 @@ namespace AuthorizeNet.Api.Controllers.Test
         }
         */
     }
-}
+}        
+

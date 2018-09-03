@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AuthorizeNet {
     /// <summary>
-    /// Parses the response from the transaction (a piped string) into a represenational class
+    /// Parses the response from the transaction (a piped string) into a representational class
     /// </summary>
     public class CardPresentResponse:ResponseBase, IGatewayResponse {
 
@@ -159,10 +159,11 @@ namespace AuthorizeNet {
         }
 
         /// <summary>
-        /// Gets the response message code which is a more detailed response code
+        /// Gets the response reason code.
         /// </summary>
-        public int? ResponseMessageCode {
-            get { return ParseInt(2); }
+        /// <value>The response reason code.</value>
+        public string ResponseReasonCode {
+            get { return ParseResponse(2); }
         }
 
         /// <summary>
@@ -179,6 +180,16 @@ namespace AuthorizeNet {
         /// <value>The transaction ID.</value>
         public string TransactionID {
             get { return ParseResponse(7); }
+        }
+
+        /// <summary>
+        /// Gets the value by index
+        /// </summary>
+        /// <param name="position">position of the response to be returned</param>
+        /// <returns>Returns index value.</returns>
+        public string GetValueByIndex(int position)
+        {
+            return ParseResponse(position);
         }
 
         #endregion

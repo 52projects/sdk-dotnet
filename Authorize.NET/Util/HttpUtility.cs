@@ -12,6 +12,8 @@ namespace AuthorizeNet.Util
 #pragma warning disable 1591
     public static class HttpUtility {
 
+        //Max response size allowed: 64 MB
+        private const int MaxResponseLength = 67108864;
 	    private static readonly Log Logger = LogFactory.getLog(typeof(HttpUtility));
         private static bool _proxySet;// = false;
 
@@ -46,6 +48,14 @@ namespace AuthorizeNet.Util
             webRequest.KeepAlive = true;
             webRequest.Proxy = SetProxyIfRequested(webRequest.Proxy);
 
+            //set the http connection timeout 
+            var httpConnectionTimeout = AuthorizeNet.Environment.getIntProperty(Constants.HttpConnectionTimeout);
+            webRequest.Timeout = (httpConnectionTimeout != 0 ? httpConnectionTimeout : Constants.HttpConnectionDefaultTimeout);
+
+            //set the time out to read/write from stream
+            var httpReadWriteTimeout = AuthorizeNet.Environment.getIntProperty(Constants.HttpReadWriteTimeout);
+            webRequest.ReadWriteTimeout = (httpReadWriteTimeout != 0 ? httpReadWriteTimeout : Constants.HttpReadWriteDefaultTimeout);
+
             var requestType = typeof (TQ);
             var serializer = new XmlSerializer(requestType);
             using (var writer = new XmlTextWriter(webRequest.GetRequestStream(), Encoding.UTF8))
@@ -56,6 +66,10 @@ namespace AuthorizeNet.Util
             // Get the response
             String responseAsString = null;
             Logger.debug(string.Format("Retreiving Response from Url: '{0}'", postUrl));
+            
+            // Set Tls to Tls1.2
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
             using (var webResponse = webRequest.GetResponse())
             {
                 Logger.debug(string.Format("Received Response: '{0}'", webResponse));
@@ -64,9 +78,21 @@ namespace AuthorizeNet.Util
                 {
                     if (null != responseStream)
                     {
+                        var result = new StringBuilder();
+
                         using (var reader = new StreamReader(responseStream))
                         {
-                            responseAsString = reader.ReadToEnd();
+                            while (!reader.EndOfStream)
+                            {
+                                result.Append((char)reader.Read());
+
+                                if (result.Length >= MaxResponseLength)
+                                {
+                                    throw new Exception("response is too long.");
+                                }
+                            }
+
+                            responseAsString = result.Length > 0 ? result.ToString() : null;
                         }
                         Logger.debug(string.Format("Response from Stream: '{0}'", responseAsString));
                     }
@@ -132,11 +158,9 @@ namespace AuthorizeNet.Util
                 {
                     newProxy = new WebProxy(proxyUri);
                 }
-                //if (null != newProxy)
-                {
-                    newProxy.UseDefaultCredentials = true;
-                    newProxy.BypassProxyOnLocal = true;
-                }
+
+                newProxy.UseDefaultCredentials = true;
+                newProxy.BypassProxyOnLocal = true;
             }
             return (newProxy ?? proxy);
         }

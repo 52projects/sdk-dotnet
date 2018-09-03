@@ -5,6 +5,7 @@ using System.Xml;
 using System.IO;
 using System.Net;
 using AuthorizeNet.APICore;
+using AuthorizeNet.Util;
 
 namespace AuthorizeNet {
     /// <summary>
@@ -30,7 +31,7 @@ namespace AuthorizeNet {
         }
 
         public const string TEST_URL = "https://apitest.authorize.net/xml/v1/request.api";
-        public const string URL = "https://api.authorize.net/xml/v1/request.api";
+        public const string URL = "https://api2.authorize.net/xml/v1/request.api";
 
         /// <summary>
         /// Adds authentication information to the request.
@@ -58,6 +59,14 @@ namespace AuthorizeNet {
             webRequest.ContentType = "text/xml";
             webRequest.KeepAlive = true;
 
+            //set the http connection timeout 
+            var httpConnectionTimeout = AuthorizeNet.Environment.getIntProperty(Constants.HttpConnectionTimeout);
+            webRequest.Timeout = (httpConnectionTimeout != 0 ? httpConnectionTimeout : Constants.HttpConnectionDefaultTimeout);
+
+            //set the time out to read/write from stream
+            var httpReadWriteTimeout = AuthorizeNet.Environment.getIntProperty(Constants.HttpReadWriteTimeout);
+            webRequest.ReadWriteTimeout = (httpReadWriteTimeout != 0 ? httpReadWriteTimeout : Constants.HttpReadWriteDefaultTimeout);
+
             // Serialize the request
             var type = apiRequest.GetType();
             var serializer = new XmlSerializer(type);
@@ -65,20 +74,21 @@ namespace AuthorizeNet {
             serializer.Serialize(writer, apiRequest);
             writer.Close();
 
+            // Set Tls to Tls1.2
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
             // Get the response
             WebResponse webResponse = webRequest.GetResponse();
 
             // Load the response from the API server into an XmlDocument.
-            _xmlDoc = new XmlDocument();
-            _xmlDoc.Load(XmlReader.Create(webResponse.GetResponseStream()));
+            var xmlDoc = new XmlDocument();
+            xmlDoc.Load(XmlReader.Create(webResponse.GetResponseStream(), new XmlReaderSettings()));
 
 
-            var response = DecideResponse(_xmlDoc);
-            CheckForErrors(response);
+            var response = DecideResponse(xmlDoc);
+            CheckForErrors(response, xmlDoc);
             return response;
         }
-        XmlDocument _xmlDoc;
 
         string Serialize(object apiRequest) {
             // Serialize the request
@@ -92,16 +102,42 @@ namespace AuthorizeNet {
             }
             return result;
         }
-        void CheckForErrors(ANetApiResponse response) {
-            if (response.messages.message.Length > 0) {
-                if (response.messages.resultCode == messageTypeEnum.Error) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 0; i < response.messages.message.Length; i++) {
-                        sb.AppendFormat("Error processing request: {0} - {1}", response.messages.message[i].code, response.messages.message[i].text);
-                    }
-                    throw new InvalidOperationException(sb.ToString());
-                }
 
+        void CheckForErrors(ANetApiResponse response, XmlDocument xmlDoc) {
+
+            if (response.GetType() == typeof(createCustomerProfileTransactionResponse)) {
+                //there's a directResponse we need to find...
+                var thingy = (createCustomerProfileTransactionResponse)response;
+                //should not initialize directresponse
+                for (var i = 0; i <= 1; i++)
+                {
+                    if (null != xmlDoc && null != xmlDoc.ChildNodes[i])
+                    {
+                        for (var j = 0; j <= 1; j++)
+                        {
+                            if (null != xmlDoc.ChildNodes[i].ChildNodes[j])
+                            {
+                                thingy.directResponse = xmlDoc.ChildNodes[i].ChildNodes[j].InnerText;
+                            }
+                            if (null != thingy.directResponse) { break; }
+                        }
+                    }
+                    if (null != thingy.directResponse) { break; }
+                }
+                response = thingy;
+            } else {
+
+                if (response.messages.message.Length > 0) {
+
+                    if (response.messages.resultCode == messageTypeEnum.Error) {
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < response.messages.message.Length; i++) {
+                            sb.AppendFormat("Error processing request: {0} - {1}", response.messages.message[i].code, response.messages.message[i].text);
+                        }
+                        throw new InvalidOperationException(sb.ToString());
+                    }
+
+                }
             }
         }
         ANetApiResponse DecideResponse(XmlDocument xmldoc) {

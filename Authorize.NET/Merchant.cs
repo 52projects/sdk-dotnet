@@ -29,10 +29,10 @@ namespace AuthorizeNet {
             return merchant;
         }
 
-        public bool IsSandboxEnvironment() {
-            return (Environment != null &&
-                (Environment.SANDBOX == Environment));
-        }
+	    public bool IsSandboxEnvironment() {
+		    return (Environment !=null &&
+			    (Environment.SANDBOX == Environment));
+	    }
     }
 #pragma warning restore 1591
 }
