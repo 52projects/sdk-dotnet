@@ -26,7 +26,7 @@ namespace AuthorizeNet {
                 _gateway = new HttpXmlUtility(ServiceMode.Test, apiLogin, transactionKey);
             }
         }
-    
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomerGateway"/> class.
         /// </summary>

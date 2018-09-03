@@ -7,7 +7,7 @@ namespace AuthorizeNet {
     /// <summary>
     /// Parses the response from the transaction (a piped string) into a representational class
     /// </summary>
-    public class CardPresentResponse:ResponseBase, IGatewayResponse {
+    public class CardPresentResponse : ResponseBase, IGatewayResponse {
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CardPresentResponse"/> class.
@@ -51,34 +51,34 @@ namespace AuthorizeNet {
             get {
                 var code = ParseResponse(5);
                 switch (code) {
-                    case("A"): 
-	                     return "Address (Street): matches, ZIP does not";
-                    case("B"): 
-	                     return "Address information not provided for AVS check";
-                    case("E"): 
-	                     return "AVS error ";
-                    case("G"): 
-	                     return "Non-U.S. Card Issuing Bank ";
-                    case("N"): 
-	                     return "No Match on Address (Street) or ZIP ";
-                    case("P"): 
-	                     return "AVS not applicable for this transaction ";
-                    case("R"): 
-	                     return "Retry — System unavailable or timed out ";
-                    case("S"): 
-	                     return "Service not supported by issuer ";
-                    case("U"): 
-	                     return "Address information is unavailable ";
-                    case("W"): 
-	                     return "Nine digit ZIP matches, Address (Street): does not ";
-                    case("X"): 
-	                     return "Address (Street) and nine digit ZIP match ";
-                    case("Y"): 
-	                     return "Address (Street) and five digit ZIP match ";
-                    case("Z"):
-                         return "Five digit ZIP matches, Address (Street) does not";
+                    case ("A"):
+                        return "Address (Street): matches, ZIP does not";
+                    case ("B"):
+                        return "Address information not provided for AVS check";
+                    case ("E"):
+                        return "AVS error ";
+                    case ("G"):
+                        return "Non-U.S. Card Issuing Bank ";
+                    case ("N"):
+                        return "No Match on Address (Street) or ZIP ";
+                    case ("P"):
+                        return "AVS not applicable for this transaction ";
+                    case ("R"):
+                        return "Retry — System unavailable or timed out ";
+                    case ("S"):
+                        return "Service not supported by issuer ";
+                    case ("U"):
+                        return "Address information is unavailable ";
+                    case ("W"):
+                        return "Nine digit ZIP matches, Address (Street): does not ";
+                    case ("X"):
+                        return "Address (Street) and nine digit ZIP match ";
+                    case ("Y"):
+                        return "Address (Street) and five digit ZIP match ";
+                    case ("Z"):
+                        return "Five digit ZIP matches, Address (Street) does not";
                     default:
-                         return "";
+                        return "";
                 }
             }
         }
@@ -187,8 +187,7 @@ namespace AuthorizeNet {
         /// </summary>
         /// <param name="position">position of the response to be returned</param>
         /// <returns>Returns index value.</returns>
-        public string GetValueByIndex(int position)
-        {
+        public string GetValueByIndex(int position) {
             return ParseResponse(position);
         }
 

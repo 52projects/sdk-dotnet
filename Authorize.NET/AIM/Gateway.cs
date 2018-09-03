@@ -23,6 +23,8 @@ namespace AuthorizeNet {
 
         public const string TEST_URL = "https://test.authorize.net/gateway/transact.dll";
         public const string LIVE_URL = "https://secure2.authorize.net/gateway/transact.dll";
+        private readonly string _customUrl = string.Empty;
+
         //Max response size allowed: 64 MB
         private const int MaxResponseLength = 67108864;
 		
@@ -37,6 +39,10 @@ namespace AuthorizeNet {
 		}
 		
 		public Gateway(string apiLogin, string transactionKey):this(apiLogin,transactionKey,true){}
+
+        public Gateway(string apiLogin, string transactionKey, bool testMode, string url) : this(apiLogin, transactionKey, testMode) {
+            _customUrl = url;
+        }
 
         public IGatewayResponse Send(IGatewayRequest request) {
             return Send(request, null);
@@ -108,9 +114,12 @@ namespace AuthorizeNet {
 
 		public virtual IGatewayResponse Send (IGatewayRequest request, string description)
 		{
-
             var serviceUrl = TEST_URL;
-            if (!TestMode)
+            
+            if (!string.IsNullOrEmpty(_customUrl)) {
+                serviceUrl = _customUrl;
+            }
+            else if (!TestMode)
                 serviceUrl = LIVE_URL;
 
             LoadAuthorization(request);

@@ -7,7 +7,6 @@ namespace AuthorizeNet {
         string InvoiceNumber { get; }
         string CardNumber { get; }
         string ResponseCode { get; }
-        int? ResponseMessageCode { get; }
         string Message { get; }
         string TransactionID { get; }
         string ResponseReasonCode { get; }
